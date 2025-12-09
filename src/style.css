@@ -1,0 +1,133 @@
+.container {
+  display: flex;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  background-color: #adccd2;
+  flex-wrap: wrap;
+}
+.box1 {
+  display: flex;
+  width: 40vw;
+  flex-direction: column;
+  height: 40vh;
+  margin-left: 52px;
+}
+.box2 {
+  display: flex;
+  width: 40vw;
+  flex-direction: column;
+  height: 40vh;
+  margin-left: 52px;
+}
+.box3 {
+  display: flex;
+  width: 40vw;
+  flex-direction: column;
+  height: 32vh;
+  margin-left: 292px;
+  margin-top: 100px;
+}
+
+.last,
+.lasts {
+  height: 5vh;
+}
+.final,
+.finals {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+.headbox {
+  display: flex;
+  /* padding-left: 102px; */
+  padding-top: 5px;
+  background-color: #8bbfbb;
+  width: 102px;
+  margin-left: 165px;
+  margin-top: 15px;
+  justify-content: center;
+  /* padding-top: 5px; */
+}
+.headboxs {
+  display: flex;
+  padding-top: 5px;
+  background-color: #3c4952;
+  width: 102px;
+  margin-left: 165px;
+  margin-top: 15px;
+  justify-content: center;
+  color: #ffffff;
+}
+.gameboard1 {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 130px;
+  height: 130px;
+  margin-top: 20px;
+  margin-left: 100px;
+}
+.gameboard11 {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  width: 130px;
+  height: 130px;
+  margin-top: 20px;
+  margin-left: 100px;
+}
+.alp0,
+.alp1,
+.alp2,
+.alp3,
+.alp4,
+.alp5,
+.alp6,
+.alp7,
+.alp8,
+.alp9,
+.alp10 {
+  /* padding-top: 122px; */
+  /* border: 5px solid red;  */
+  align-self: center;
+  text-align: start;
+  /* top: 55px; */
+  margin-top: -18px;
+  margin-left: 6px;
+}
+.alps0,
+.alps1,
+.alps2,
+.alps3,
+.alps4,
+.alps5,
+.alps6,
+.alps7,
+.alps8,
+.alps9 {
+  margin-left: -22px;
+  margin-top: 4px;
+  width: 10px;
+}
+.alps0 {
+  margin-top: -15px;
+}
+.alps9 {
+  margin-left: -25px;
+}
+.gameboard1 div {
+  width: 22px;
+  height: 19px;
+  background-color: #8bbfbb;
+  border: 1px solid lightblue;
+  border-radius: 5px;
+}
+.gameboard11 div {
+  width: 22px;
+  height: 19px;
+  background-color: #3c4952;
+  border: 1px solid lightblue;
+  border-radius: 5px;
+}
