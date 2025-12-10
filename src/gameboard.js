@@ -108,25 +108,44 @@ let options = [
 ];
 const cells = document.querySelectorAll(".boxs");
 
-function gameboard(size) {
+function gameboard(size = 10) {
   const board = Array(size)
     .fill(null)
     .map(() => Array(size).fill(""));
   const placedships = [];
   const missedShots = [];
 
-  function placeship(ships, a, b) {
-    if (cells[a][b] === "") {
-      cells[a][b] = ships;
-      placedships.push(ships);
+  function placeship(shipobj, a, b, direction = "horizontal") {
+    const length = shipobj.length
+    if(direction === 'horizontal') {
+      if(b + length > board[0].length) return false
+    } else {
+      if(a + length > board[0].length) return false
     }
-  }
+    for(let i = 0; i < length; i++) {
+      const row = direction ==="horizontal" ? a : a + i
+      const col = direction ==="horizontal" ? b + i + b
+    
+     if (board[row][col] !== "") {
+      return false;
+     } }
+
+    for(let i = 0; i < length; i++) {
+     const row = direction ==="horizontal" ? a : a + i
+      const col = direction ==="horizontal" ? b + i + b
+      board[row][col] = shipobj
+    }
+    placedships.push(shipobj)
+    return true
+  
+}
   function receiveAttack(a, b) {
-    const target = cells[a][b];
+    const target = board[a][b];
     if (!target !== "" && target !== null && target.hit) {
       target.hit();
     } else {
       missedShots.push([a, b]);
+      return "miss";
     }
   }
   return {
@@ -140,9 +159,8 @@ function gameboard(size) {
 function game() {
   cells.forEach((cells, index) => {
     cells.addEventListener("click", () => {
-      if (gameover) return;
-      if (cells.textContent.trim() != "") return;
-      handleplayermove(index);
+      cells.style.backgroundColor = rdmcolor;
+      
     });
   });
 }
@@ -164,5 +182,4 @@ function rdmcolor() {
 //   checkwinner();
 // }
 export const greet = "hello";
-export { gameboard, game, cells,rdmcolor };
-// module.exports = gameboard;
+export { gameboard, game, cells, rdmcolor };
