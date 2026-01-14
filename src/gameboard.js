@@ -1,120 +1,15 @@
 import { ship } from "./ship.js";
-
 ship();
 let playermove = 0;
 let computermove = 0;
 let gameover = false;
-let options = [
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-  "",
-];
 const cells = document.querySelectorAll(".boxs");
-
 function gameboard(size = 10) {
   const board = Array(size)
     .fill(null)
     .map(() => Array(size).fill(""));
   const placedships = [];
   const missedShots = [];
-
   function placeship(shipobj, a, b, direction = "horizontal") {
     const length = shipobj.length;
     if (direction === "horizontal") {
@@ -125,12 +20,10 @@ function gameboard(size = 10) {
     for (let i = 0; i < length; i++) {
       const row = direction === "horizontal" ? a : a + i;
       const col = direction === "horizontal" ? b + i : b;
-
       if (board[row][col] !== "") {
         return false;
       }
     }
-
     for (let i = 0; i < length; i++) {
       const row = direction === "horizontal" ? a : a + i;
       const col = direction === "horizontal" ? b + i : b;
@@ -141,12 +34,14 @@ function gameboard(size = 10) {
   }
   function receiveAttack(a, b) {
     const target = board[a][b];
-    if (!target !== "" && target !== null && target.hit) {
+    if (target !== "" && target !== null && typeof target.hit === 'function') {
       target.hit();
-      return "hit";
+      const sunk = target.sunk;
+      const gameover = placedships.every(ship => ship.sunk);
+      return { result: "hit", sunk, gameover };
     } else {
       missedShots.push([a, b]);
-      return "miss";
+      return { result: "miss", sunk: false, gameover: false };
     }
   }
   return {
@@ -172,14 +67,4 @@ function rdmcolor() {
   }
   return color;
 }
-// function handleplayermove(cellindex) {
-//   if (playermove >= playermovelimit || gameover) return;
-//   if (gameover || options[cellindex] !== "") return;
-//   options[cellindex] = "x";
-//   cells[cellindex].textContent = "x";
-//   playermove++;
-//   computerplay();
-//   checkwinner();
-// }
-export const greet = "hello";
 export { gameboard, game, cells, rdmcolor };

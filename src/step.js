@@ -1,83 +1,202 @@
 import "./style.css";
-import { gameboard, game, cells, rdmcolor } from "./gameboard.js";
+import { gameboard, rdmcolor } from "./gameboard.js";
 import { ship } from "./ship.js";
+import { player } from "./player.js";
 
-ship();
-const games = gameboard();
-const ships = ship(3);
-let direction = "horizontal";
-let shipcells = [];
-let shipdirection = null;
 document.addEventListener("DOMContentLoaded", () => {
-  // })
-  function placeSegment(row, col) {
-    games.board[row][col] = ships;
-    shipcells.push([row, col]);
-    const uiIndex = row * 10 + col;
-    cells[uiIndex].style.backgroundColor = "red";
-    if (shipcells.length === currentShip.length) {
-      shipcells = [];
-      shipdirection = null;
-      ships = ship(3);
-    }
-    console.log("placig segmet at", row, col);
+  const playerBoardCells = document.querySelectorAll(".gameboard1 .cell");
+  const computerBoardCells = document.querySelectorAll(".gameboard11 .cell");
+
+  const human = player('human');
+  const computer = player('computer');
+
+  human.setEnemy(computer.board);
+  computer.setEnemy(human.board);
+
+  let currentPlayer = 'human';
+  let gameOver = false;
+  let playerScore = 0;
+  let computerScore = 0;
+  let playerMisses = 0;
+  let computerMisses = 0;
+  let playerAttacksThisTurn = 0;
+  let computerAttacksThisTurn = 0;
+  let roundPhase = 0;
+  function updateScoreboard() {
+    document.getElementById('player-hits').textContent = playerScore;
+    document.getElementById('player-misses').textContent = playerMisses;
+    document.getElementById('computer-hits').textContent = computerScore;
+    document.getElementById('computer-misses').textContent = computerMisses;
   }
-  cells.forEach((cell, index) => {
+
+  function updateTurnDisplay() {
+    document.querySelector('.final').textContent = currentPlayer === 'human' ? 'Your Turn' : 'Computer Turn';
+  }
+
+  function endRound() {
+    const messageDiv = document.getElementById('message');
+    if (playerScore > computerScore) {
+      messageDiv.textContent = 'Player wins the round!';
+    } else if (computerScore > playerScore) {
+      messageDiv.textContent = 'Computer wins the round!';
+    } else {
+      messageDiv.textContent = 'Round is a tie!';
+    }
+    messageDiv.style.display = 'block';
+    setTimeout(() => {
+      messageDiv.style.display = 'none';
+      resetGame();
+    }, 3000);
+  }
+
+  function resetGame() {
+    roundPhase = 0;
+    currentPlayer = 'human';
+    gameOver = false;
+    playerAttacksThisTurn = 0;
+    computerAttacksThisTurn = 0;
+    playerScore = 0;
+    computerScore = 0;
+    playerMisses = 0;
+    computerMisses = 0;
+    // reset boards
+    human.board.board = Array(10).fill(null).map(() => Array(10).fill(""));
+    human.board.placedships = [];
+    computer.board.board = Array(10).fill(null).map(() => Array(10).fill(""));
+    computer.board.placedships = [];
+    human.attacks = [];
+    computer.attacks = [];
+    human.board.missedShots = [];
+    computer.board.missedShots = [];
+    // reset UI
+    playerBoardCells.forEach(cell => cell.style.backgroundColor = '#8bbfbb');
+    computerBoardCells.forEach(cell => cell.style.backgroundColor = '#3c4952');
+    // place ships for computer
+    computer.placeShips();
+    // reset human placement
+    currentShipIndex = 0;
+    currentShip = ship(shipLengths[currentShipIndex]);
+    shipCells = [];
+    shipDirection = null;
+    // update
+    updateTurnDisplay();
+    updateScoreboard();
+  }
+
+  function computerTurn() {
+    if (computerAttacksThisTurn < 3 && !gameOver) {
+      const { row: compRow, col: compCol, result: compResult, sunk: compSunk } = computer.attack();
+      const compIndex = compRow * 10 + compCol;
+      if (compResult === "hit") {
+        computerScore++;
+        playerBoardCells[compIndex].style.backgroundColor = "red";
+      } else if (compResult === "miss") {
+        computerMisses++;
+        playerBoardCells[compIndex].style.backgroundColor = "gray";
+      }
+      updateScoreboard();
+      computerAttacksThisTurn++;
+      if (computerAttacksThisTurn >= 3) {
+        computerAttacksThisTurn = 0;
+        roundPhase++;
+        if (roundPhase === 4) {
+          endRound();
+        } else {
+          currentPlayer = roundPhase % 2 === 0 ? 'human' : 'computer';
+          updateTurnDisplay();
+        }
+      } else {
+        setTimeout(computerTurn, 1000);
+      }
+    }
+  }
+
+  // Ship placement for human (multiple ships)
+  const shipLengths = [5, 4, 3, 3, 2];
+  let currentShipIndex = 0;
+  let currentShip = ship(shipLengths[currentShipIndex]);
+  let shipCells = [];
+  let shipDirection = null;
+
+  function placeSegment(row, col) {
+    shipCells.push([row, col]);
+    const uiIndex = row * 10 + col;
+    playerBoardCells[uiIndex].style.backgroundColor = rdmcolor();
+    if (shipCells.length === currentShip.length) {
+      shipCells.forEach(([r, c]) => {
+        human.board.board[r][c] = currentShip;
+      });
+      human.board.placedships.push(currentShip);
+      shipCells = [];
+      shipDirection = null;
+      currentShipIndex++;
+      if (currentShipIndex < shipLengths.length) {
+        currentShip = ship(shipLengths[currentShipIndex]);
+      } else {
+        currentShip = null; // All ships placed
+      }
+    }
+  }
+
+  // Human ship placement
+  playerBoardCells.forEach((cell, index) => {
     cell.addEventListener("click", () => {
-      console.log("cell clicked", index);
-      const row = Math.floor(index / 10);
-      const col = index % 10;
-      if (!games?.board?.[row] !== "") return;
-      if (games.board[row][col] !== "") return;
-      if (shipcells.length === 0) {
+      if (currentShip && !gameOver) {
+        const row = Math.floor(index / 10);
+        const col = index % 10;
+        if (human.board.board[row][col] !== "") return;
+        if (shipCells.length === 0) {
+          placeSegment(row, col);
+          return;
+        }
+        const [r0, c0] = shipCells[0];
+        if (shipCells.length === 1) {
+          shipDirection = r0 === row ? "horizontal" : "vertical";
+          placeSegment(row, col);
+          return;
+        }
+        const [lastRow, lastCol] = shipCells.at(-1);
+        // Removed adjacent check to allow flexible shapes
         placeSegment(row, col);
-        return;
       }
-      if (shipcells.length === 1) {
-        const first = shipcells.at[0];
-        if (!first) return;
-        const r0 = first[0];
-        const c0 = first[1];
-
-        if (Math.abs(r0 - row) + Math.abs(c0 - col) !== 1) return;
-        shipdirection = r0 === row ? "horizontal" : "vertical";
-        placeSegment(row, col);
-        return;
-      }
-      const lastcell = shipcells.at(-1);
-      if (!lastcell) return;
-      const lastRow = lastcell[0];
-      const lastCol = lastcell[1];
-
-      // const [lastRow, lastCol] = shipcells[shipcells.length - 1];
-      if (Math.abs(lastRow - row) + Math.abs(lastCol - col) !== 1) return;
-      if (
-        (shipdirection === "horizontal" && row !== lastRow) ||
-        (shipdirection === "vertical" && col !== lastCol)
-      ) {
-        return;
-      }
-      placeSegment(row, col);
-
-      //   for (let i = 0; i < ships.length; i++) {
-      //     const r = direction === "horizontal" ? row : row + i;
-      //     const c = direction === "horizontal" ? col + i : col;
-      //     cells[r * 10 + c].style.backgroundColor = rdmcolor();
-      //     console.log("ship placed successfully");
-
-      // } else {
-      //   console.log("failed to place ship");
-      // }
-      // cells.style.backgroundColor = rdmcolor();
-      // if (games.placeship(ships, 2, 3)) {
-      // }
     });
   });
-  // if (games.placeship(ships, 2, 3)) {
-  //   console.log("ship placed successfully");
-  // } else {
-  //   console.log("failed to place ship");
-  // }
-  // console.log(rdmcolor());
-  gameboard();
+
+  // Attacks on computer board
+  computerBoardCells.forEach((cell, index) => {
+    cell.addEventListener("click", () => {
+      if (currentShip) {
+        currentShip = null; // Stop ship placement on first attack attempt
+      }
+      if (currentPlayer === 'human' && !currentShip && !gameOver) {
+        const row = Math.floor(index / 10);
+        const col = index % 10;
+        const { result, sunk } = human.attack(row, col);
+        if (result === "hit") {
+          playerScore++;
+          cell.style.backgroundColor = "red";
+        } else if (result === "miss") {
+          playerMisses++;
+          cell.style.backgroundColor = "gray";
+        }
+        playerAttacksThisTurn++;
+        updateScoreboard();
+        if (playerAttacksThisTurn >= 3) {
+          playerAttacksThisTurn = 0;
+          roundPhase++;
+          if (roundPhase === 4) {
+            endRound();
+          } else {
+            currentPlayer = roundPhase % 2 === 0 ? 'human' : 'computer';
+            updateTurnDisplay();
+            if (currentPlayer === 'computer') {
+              setTimeout(computerTurn, 1000);
+            }
+          }
+        }
+      }
+    });
+  });
+  updateTurnDisplay();
+  updateScoreboard();
 });

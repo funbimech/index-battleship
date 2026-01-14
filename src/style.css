@@ -33,11 +33,25 @@
 .lasts {
   height: 5vh;
 }
+.turn-display {
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
 .final,
 .finals {
-  display: flex;
+  display: inline-block;
   justify-content: center;
-  margin-top: 36px;
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #4a90e2;
+  border: 3px solid #4a90e2;
+  padding: 15px 30px;
+  border-radius: 15px;
+  background-color: #e8f4f8;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 .headbox {
   display: flex;
@@ -46,7 +60,7 @@
   background-color: #8bbfbb;
   width: 102px;
   margin-left: 165px;
-  margin-top: 15px;
+  margin-top: 10px;
   justify-content: center;
   /* padding-top: 5px; */
 }
@@ -56,7 +70,7 @@
   background-color: #3c4952;
   width: 102px;
   margin-left: 165px;
-  margin-top: 15px;
+  margin-top: 10px;
   justify-content: center;
   color: #ffffff;
 }
@@ -64,8 +78,8 @@
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  width: 130px;
-  height: 130px;
+  width: 300px;
+  height: 300px;
   margin-top: 20px;
   margin-left: 100px;
 }
@@ -73,8 +87,8 @@
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  width: 130px;
-  height: 130px;
+  width: 300px;
+  height: 300px;
   margin-top: 20px;
   margin-left: 100px;
 }
@@ -96,6 +110,7 @@
   /* top: 55px; */
   margin-top: -18px;
   margin-left: 6px;
+  pointer-events: none;
 }
 .alps0,
 .alps1,
@@ -110,6 +125,7 @@
   margin-left: -22px;
   margin-top: 4px;
   width: 10px;
+  pointer-events: none;
 }
 .alps0 {
   margin-top: -15px;
@@ -118,16 +134,172 @@
   margin-left: -25px;
 }
 .gameboard1 div {
-  width: 22px;
-  height: 19px;
+  width: 30px;
+  height: 30px;
   background-color: #8bbfbb;
   border: 1px solid lightblue;
   border-radius: 5px;
+  cursor: pointer;
 }
 .gameboard11 div {
-  width: 22px;
-  height: 19px;
+  width: 30px;
+  height: 30px;
   background-color: #3c4952;
   border: 1px solid lightblue;
   border-radius: 5px;
+  cursor: pointer;
+}
+
+.scoreboard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background-color: #e8f4f8;
+  border: 2px solid #4a90e2;
+  border-radius: 15px;
+  font-family: 'Arial', sans-serif;
+  font-size: 18px;
+  color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.scoreboard div {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.scoreboard div:last-child {
+  border-bottom: none;
+}
+
+#message {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  color: white;
+  padding: 30px 40px;
+  border-radius: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .box1, .box2 {
+    width: 45vw;
+  }
+  .box3 {
+    width: 45vw;
+    margin-left: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    height: auto;
+    min-height: 100vh;
+  }
+  .box1, .box2, .box3 {
+    width: 95vw;
+    margin: 10px 0;
+    height: auto;
+  }
+  .box3 {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+  .gameboard1, .gameboard11 {
+    width: 300px;
+    height: 300px;
+    margin: 10px auto;
+  }
+  .headbox, .headboxs {
+    font-size: 14px;
+    padding: 5px;
+    margin-left: 0;
+    text-align: center;
+  }
+  .scoreboard {
+    font-size: 16px;
+    padding: 15px;
+  }
+  .final {
+    font-size: 20px;
+    padding: 12px 25px;
+  }
+  #message {
+    font-size: 20px;
+    padding: 20px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5px;
+    height: auto;
+    min-height: 100vh;
+  }
+  .box1, .box2, .box3 {
+    width: 100vw;
+    margin: 5px 0;
+  }
+  .gameboard1, .gameboard11 {
+    width: 250px;
+    height: 250px;
+    margin: 5px auto;
+  }
+  .gameboard1 div, .gameboard11 div {
+    width: 25px;
+    height: 25px;
+  }
+  .headbox, .headboxs {
+    font-size: 12px;
+    margin-left: 0;
+    text-align: center;
+  }
+  .alp0, .alps0, .alp1, .alps1, .alp2, .alps2, .alp3, .alps3, .alp4, .alps4, .alp5, .alps5, .alp6, .alps6, .alp7, .alps7, .alp8, .alps8, .alp9, .alps9, .alp10 {
+    font-size: 10px;
+    margin-top: -15px;
+    margin-left: 2px;
+  }
+  .alps0 {
+    margin-top: -12px;
+  }
+  .alps9 {
+    margin-left: -20px;
+  }
+  .scoreboard {
+    font-size: 14px;
+    padding: 10px;
+  }
+  .final {
+    font-size: 18px;
+    padding: 10px 20px;
+  }
+  #message {
+    font-size: 18px;
+    padding: 15px 25px;
+  }
+  .turn-display {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
 }
